@@ -32,11 +32,11 @@ docker compose logs -f app    # follow the application logs
 
 Services once up:
 
-| Service     | URL                      |
-|-------------|--------------------------|
-| App         | http://localhost:8080    |
-| Prometheus  | http://localhost:9090    |
-| Grafana     | http://localhost:3000    |
+| Service    | URL                   |
+| ---------- | --------------------- |
+| App        | http://localhost:8080 |
+| Prometheus | http://localhost:9090 |
+| Grafana    | http://localhost:3001 |
 
 Grafana logs in anonymously (admin/admin also works). Open the **Service
 Overview** dashboard under the **Lab** folder.
@@ -101,3 +101,16 @@ commit and redeploy, or rebuild from a previous tag:
 git revert <commit>          # revert a bad release
 docker compose up -d --build # redeploy the reverted version
 ```
+
+## Cloud mapping (documentation only)
+
+The local flow maps directly to cloud-managed services:
+
+- Local build + tag: `docker build` / `docker compose build` -> push the image to Google Artifact Registry.
+- Local Compose deploy: `docker compose up -d` -> deploy the same container image to Cloud Run.
+- Local Prometheus + Grafana stack: `docker compose` monitoring -> Cloud Monitoring / managed dashboards and alerting.
+- Local CI workflow: GitHub Actions -> the same CI pipeline can build, test, push the image, and trigger the deployment in the cloud.
+
+In other words, the same commit-to-monitoring flow stays the same in production: CI validates the code, Artifact Registry stores the container image, Cloud Run runs it, and Cloud Monitoring observes health and metrics.
+
+This is a documentation-only mapping; no cloud deployment or billing is required for this lab.
